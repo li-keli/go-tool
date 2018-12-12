@@ -9,9 +9,9 @@ import (
 	"runtime/debug"
 	"strconv"
 
-	"git.jsjit.cn/customerService/customerService_Core/wechat/context"
-	"git.jsjit.cn/customerService/customerService_Core/wechat/message"
-	"git.jsjit.cn/customerService/customerService_Core/wechat/util"
+	"github.com/li-keli/go-tool/wechat/context"
+	"github.com/li-keli/go-tool/wechat/message"
+	"github.com/li-keli/go-tool/wechat/wechatutil"
 )
 
 //Server struct
@@ -68,7 +68,7 @@ func (srv *Server) Validate() bool {
 	timestamp := srv.Query("timestamp")
 	nonce := srv.Query("nonce")
 	signature := srv.Query("signature")
-	return signature == util.Signature(srv.Token, timestamp, nonce)
+	return signature == wechatutil.Signature(srv.Token, timestamp, nonce)
 }
 
 //HandleRequest 处理微信的请求
@@ -121,13 +121,13 @@ func (srv *Server) getMessage() (interface{}, error) {
 		nonce := srv.Query("nonce")
 		srv.nonce = nonce
 		msgSignature := srv.Query("msg_signature")
-		msgSignatureGen := util.Signature(srv.Token, timestamp, nonce, encryptedXMLMsg.EncryptedMsg)
+		msgSignatureGen := wechatutil.Signature(srv.Token, timestamp, nonce, encryptedXMLMsg.EncryptedMsg)
 		if msgSignature != msgSignatureGen {
 			return nil, fmt.Errorf("消息不合法，验证签名失败")
 		}
 
 		//解密
-		srv.random, rawXMLMsgBytes, err = util.DecryptMsg(srv.AppID, encryptedXMLMsg.EncryptedMsg, srv.EncodingAESKey)
+		srv.random, rawXMLMsgBytes, err = wechatutil.DecryptMsg(srv.AppID, encryptedXMLMsg.EncryptedMsg, srv.EncodingAESKey)
 		if err != nil {
 			return nil, fmt.Errorf("消息解密失败, err=%v", err)
 		}
@@ -196,7 +196,7 @@ func (srv *Server) buildResponse(reply *message.Reply) (err error) {
 	params[0] = reflect.ValueOf(msgType)
 	value.MethodByName("SetMsgType").Call(params)
 
-	params[0] = reflect.ValueOf(util.GetCurrTs())
+	params[0] = reflect.ValueOf(wechatutil.GetCurrTs())
 	value.MethodByName("SetCreateTime").Call(params)
 
 	srv.responseMsg = msgData
@@ -210,14 +210,14 @@ func (srv *Server) Send() (err error) {
 	if srv.isSafeMode {
 		//安全模式下对消息进行加密
 		var encryptedMsg []byte
-		encryptedMsg, err = util.EncryptMsg(srv.random, srv.responseRawXMLMsg, srv.AppID, srv.EncodingAESKey)
+		encryptedMsg, err = wechatutil.EncryptMsg(srv.random, srv.responseRawXMLMsg, srv.AppID, srv.EncodingAESKey)
 		if err != nil {
 			return
 		}
 
 		timestamp := srv.timestamp
 		timestampStr := strconv.FormatInt(timestamp, 10)
-		msgSignature := util.Signature(srv.Token, timestampStr, srv.nonce, string(encryptedMsg))
+		msgSignature := wechatutil.Signature(srv.Token, timestampStr, srv.nonce, string(encryptedMsg))
 		replyMsg = message.ResponseEncryptedXMLMsg{
 			EncryptedMsg: string(encryptedMsg),
 			MsgSignature: msgSignature,

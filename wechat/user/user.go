@@ -3,8 +3,9 @@ package user
 import (
 	"encoding/json"
 	"fmt"
-	"git.jsjit.cn/customerService/customerService_Core/wechat/context"
-	"git.jsjit.cn/customerService/customerService_Core/wechat/util"
+
+	"github.com/li-keli/go-tool/wechat/context"
+	"github.com/li-keli/go-tool/wechat/wechatutil"
 )
 
 const (
@@ -25,7 +26,7 @@ func NewUser(context *context.Context) *User {
 
 //Info 用户基本信息
 type Info struct {
-	util.CommonError
+	wechatutil.CommonError
 
 	Subscribe     int32    `json:"subscribe"`
 	OpenID        string   `json:"openid"`
@@ -53,7 +54,7 @@ func (user *User) GetUserInfo(openID string) (userInfo *Info, err error) {
 
 	uri := fmt.Sprintf("%s?access_token=%s&openid=%s&lang=zh_CN", userInfoURL, accessToken, openID)
 	var response []byte
-	response, err = util.HTTPGet(uri)
+	response, err = wechatutil.HTTPGet(uri)
 	if err != nil {
 		return
 	}

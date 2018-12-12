@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"git.jsjit.cn/customerService/customerService_Core/wechat/context"
-	"git.jsjit.cn/customerService/customerService_Core/wechat/util"
+	"github.com/li-keli/go-tool/wechat/wechatutil"
+
+	"github.com/li-keli/go-tool/wechat/context"
 )
 
 const (
@@ -44,7 +45,7 @@ type reqArticles struct {
 
 //resArticles 永久性图文素材返回结果
 type resArticles struct {
-	util.CommonError
+	wechatutil.CommonError
 
 	MediaID string `json:"media_id"`
 }
@@ -60,7 +61,7 @@ func (material *Material) AddNews(articles []*Article) (mediaID string, err erro
 	}
 
 	uri := fmt.Sprintf("%s?access_token=%s", addNewsURL, accessToken)
-	responseBytes, err := util.PostJSON(uri, req)
+	responseBytes, err := wechatutil.PostJSON(uri, req)
 	var res resArticles
 	err = json.Unmarshal(responseBytes, res)
 	if err != nil {
@@ -72,7 +73,7 @@ func (material *Material) AddNews(articles []*Article) (mediaID string, err erro
 
 //resAddMaterial 永久性素材上传返回的结果
 type resAddMaterial struct {
-	util.CommonError
+	wechatutil.CommonError
 
 	MediaID string `json:"media_id"`
 	URL     string `json:"url"`
@@ -91,7 +92,7 @@ func (material *Material) AddMaterial(mediaType MediaType, filename string) (med
 
 	uri := fmt.Sprintf("%s?access_token=%s&type=%s", addMaterialURL, accessToken, mediaType)
 	var response []byte
-	response, err = util.PostFile("media", filename, uri)
+	response, err = wechatutil.PostFile("media", filename, uri)
 	if err != nil {
 		return
 	}
@@ -134,7 +135,7 @@ func (material *Material) AddVideo(filename, title, introduction string) (mediaI
 		return
 	}
 
-	fields := []util.MultipartFormField{
+	fields := []wechatutil.MultipartFormField{
 		{
 			IsFile:    true,
 			Fieldname: "video",
@@ -148,7 +149,7 @@ func (material *Material) AddVideo(filename, title, introduction string) (mediaI
 	}
 
 	var response []byte
-	response, err = util.PostMultipartForm(fields, uri)
+	response, err = wechatutil.PostMultipartForm(fields, uri)
 	if err != nil {
 		return
 	}
@@ -179,11 +180,11 @@ func (material *Material) DeleteMaterial(mediaID string) error {
 	}
 
 	uri := fmt.Sprintf("%s?access_token=%s", delMaterialURL, accessToken)
-	response, err := util.PostJSON(uri, reqDeleteMaterial{mediaID})
+	response, err := wechatutil.PostJSON(uri, reqDeleteMaterial{mediaID})
 	if err != nil {
 		return err
 	}
-	var resDeleteMaterial util.CommonError
+	var resDeleteMaterial wechatutil.CommonError
 	err = json.Unmarshal(response, &resDeleteMaterial)
 	if err != nil {
 		return err

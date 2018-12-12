@@ -3,7 +3,7 @@ package material
 import (
 	"encoding/json"
 	"fmt"
-	"git.jsjit.cn/customerService/customerService_Core/wechat/util"
+	"github.com/li-keli/go-tool/wechat/wechatutil"
 )
 
 //MediaType 媒体文件类型
@@ -28,7 +28,7 @@ const (
 
 //Media 临时素材上传返回信息
 type Media struct {
-	util.CommonError
+	wechatutil.CommonError
 
 	Type         MediaType `json:"type"`
 	MediaID      string    `json:"media_id"`
@@ -46,7 +46,7 @@ func (material *Material) MediaUpload(mediaType MediaType, filename string) (med
 
 	uri := fmt.Sprintf("%s?access_token=%s&type=%s", mediaUploadURL, accessToken, mediaType)
 	var response []byte
-	response, err = util.PostFile("media", filename, uri)
+	response, err = wechatutil.PostFile("media", filename, uri)
 	if err != nil {
 		return
 	}
@@ -75,7 +75,7 @@ func (material *Material) GetMediaURL(mediaID string) (mediaURL string, err erro
 
 //resMediaImage 图片上传返回结果
 type resMediaImage struct {
-	util.CommonError
+	wechatutil.CommonError
 
 	URL string `json:"url"`
 }
@@ -90,7 +90,7 @@ func (material *Material) ImageUpload(filename string) (url string, err error) {
 
 	uri := fmt.Sprintf("%s?access_token=%s", mediaUploadImageURL, accessToken)
 	var response []byte
-	response, err = util.PostFile("media", filename, uri)
+	response, err = wechatutil.PostFile("media", filename, uri)
 	if err != nil {
 		return
 	}

@@ -3,9 +3,10 @@ package kf
 import (
 	"encoding/json"
 	"fmt"
-	"git.jsjit.cn/customerService/customerService_Core/wechat/context"
-	"git.jsjit.cn/customerService/customerService_Core/wechat/message"
-	"git.jsjit.cn/customerService/customerService_Core/wechat/util"
+
+	"github.com/li-keli/go-tool/wechat/context"
+	"github.com/li-keli/go-tool/wechat/message"
+	"github.com/li-keli/go-tool/wechat/wechatutil"
 )
 
 const (
@@ -34,7 +35,7 @@ func (kf *Kf) KfList(msgRequest KfOperResponse, action string) (msgResponse *KfO
 
 	uri := fmt.Sprintf("%s/uploadheadimg?access_token=%s", KfOperURL, accessToken)
 	var response []byte
-	response, err = util.PostJSON(uri, msgRequest)
+	response, err = wechatutil.PostJSON(uri, msgRequest)
 	if err != nil {
 		return
 	}
@@ -61,7 +62,7 @@ func (kf *Kf) AddKf(msgRequest KfOperResponse) (msgResponse *KfOperResponse, err
 
 	uri := fmt.Sprintf("%s/add?access_token=%s", KfOperURL, accessToken)
 	var response []byte
-	response, err = util.PostJSON(uri, msgRequest)
+	response, err = wechatutil.PostJSON(uri, msgRequest)
 	if err != nil {
 		return
 	}
@@ -88,7 +89,7 @@ func (kf *Kf) UpdateKf(msgRequest KfOperResponse) (msgResponse *KfOperResponse, 
 
 	uri := fmt.Sprintf("%s/update?access_token=%s", KfOperURL, accessToken)
 	var response []byte
-	response, err = util.PostJSON(uri, msgRequest)
+	response, err = wechatutil.PostJSON(uri, msgRequest)
 	if err != nil {
 		return
 	}
@@ -115,7 +116,7 @@ func (kf *Kf) DeleteKf(msgRequest KfOperResponse) (msgResponse *KfOperResponse, 
 
 	uri := fmt.Sprintf("%s/del?access_token=%s", KfOperURL, accessToken)
 	var response []byte
-	response, err = util.PostJSON(uri, msgRequest)
+	response, err = wechatutil.PostJSON(uri, msgRequest)
 	if err != nil {
 		return
 	}
@@ -142,7 +143,7 @@ func (kf *Kf) SendTextMsg(toUser string, content string) (msgResponse *KfSendMsg
 
 	uri := fmt.Sprintf("%s/send?access_token=%s", kfSendURL, accessToken)
 	var response []byte
-	response, err = util.PostJSON(uri, KfSendMsgRequest{
+	response, err = wechatutil.PostJSON(uri, KfSendMsgRequest{
 		ToUser:  toUser,
 		MsgType: "text",
 		Text:    message.Text{Content: content},
@@ -173,7 +174,7 @@ func (kf *Kf) Send(msgRequest KfSendMsgRequest) (msgResponse *KfSendMsgResponse,
 
 	uri := fmt.Sprintf("%s/send?access_token=%s", kfSendURL, accessToken)
 	var response []byte
-	response, err = util.PostJSON(uri, msgRequest)
+	response, err = wechatutil.PostJSON(uri, msgRequest)
 	if err != nil {
 		return
 	}
@@ -197,11 +198,11 @@ type KfOperRequest struct {
 }
 
 type KfOperResponse struct {
-	util.CommonError
+	wechatutil.CommonError
 }
 
 type KfListResponse struct {
-	util.CommonError
+	wechatutil.CommonError
 	KfList []struct {
 		KfAccount    string `json:"kf_account"` // 完整客服账号，格式为：账号前缀@公众号微信号
 		KfNick       string `json:"kf_nick"`    // 客服昵称
@@ -227,5 +228,5 @@ type KfSendMsgRequest struct {
 }
 
 type KfSendMsgResponse struct {
-	util.CommonError
+	wechatutil.CommonError
 }

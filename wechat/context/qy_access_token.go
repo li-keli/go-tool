@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"git.jsjit.cn/customerService/customerService_Core/wechat/util"
+	"github.com/li-keli/go-tool/wechat/wechatutil"
 )
 
 const (
@@ -17,7 +17,7 @@ const (
 
 //ResQyAccessToken struct
 type ResQyAccessToken struct {
-	util.CommonError
+	wechatutil.CommonError
 
 	AccessToken string `json:"access_token"`
 	ExpiresIn   int64  `json:"expires_in"`
@@ -56,7 +56,7 @@ func (ctx *Context) GetQyAccessTokenFromServer() (resQyAccessToken ResQyAccessTo
 	log.Printf("GetQyAccessTokenFromServer")
 	url := fmt.Sprintf(qyAccessTokenURL, ctx.AppID, ctx.AppSecret)
 	var body []byte
-	body, err = util.HTTPGet(url)
+	body, err = wechatutil.HTTPGet(url)
 	if err != nil {
 		return
 	}

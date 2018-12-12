@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"sync"
 
-	"git.jsjit.cn/customerService/customerService_Core/wechat/cache"
+	"github.com/li-keli/go-tool/wechat/cache"
 )
 
 // Context struct

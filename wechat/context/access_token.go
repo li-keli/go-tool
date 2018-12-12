@@ -3,12 +3,12 @@ package context
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"sync"
 	"time"
 
-	"git.jsjit.cn/customerService/customerService_Core/common"
-	"git.jsjit.cn/customerService/customerService_Core/wechat/util"
-	"strconv"
+	"github.com/li-keli/go-tool/util"
+	"github.com/li-keli/go-tool/wechat/wechatutil"
 )
 
 const (
@@ -20,7 +20,7 @@ const (
 
 //ResAccessToken struct
 type ResAccessToken struct {
-	util.CommonError
+	wechatutil.CommonError
 
 	AccessToken string `json:"access_token"`
 	ExpiresIn   int64  `json:"expires_in"`
@@ -59,7 +59,7 @@ func (ctx *Context) GetAccessToken() (accessToken string, err error) {
 func (ctx *Context) GetAccessTokenFromServer() (resAccessToken ResAccessToken, err error) {
 	url := fmt.Sprintf("%s?grant_type=client_credential&appid=%s&secret=%s", AccessTokenURL, ctx.AppID, ctx.AppSecret)
 	var body []byte
-	body, err = util.HTTPGet(url)
+	body, err = wechatutil.HTTPGet(url)
 	if err != nil {
 		return
 	}
@@ -83,10 +83,10 @@ func (ctx *Context) GetQyAccessTokenFromJsj() (resAccessToken ResAccessToken, er
 	unixTime := time.Now().Unix()
 	sign := fmt.Sprint(unixTime, "jsjwechat*$(@^^^^)")
 
-	url := fmt.Sprintf(jsjAccessTokenURL, strconv.FormatInt(unixTime, 10), common.ToMd5(sign))
+	url := fmt.Sprintf(jsjAccessTokenURL, strconv.FormatInt(unixTime, 10), util.ToMd5(sign))
 
 	var body []byte
-	body, err = util.HTTPGet(url)
+	body, err = wechatutil.HTTPGet(url)
 	if err != nil {
 		return
 	}

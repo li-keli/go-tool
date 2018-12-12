@@ -1,12 +1,13 @@
 package wechat
 
 import (
-	"git.jsjit.cn/customerService/customerService_Core/wechat/cache"
-	"git.jsjit.cn/customerService/customerService_Core/wechat/context"
-	"git.jsjit.cn/customerService/customerService_Core/wechat/kf"
-	"git.jsjit.cn/customerService/customerService_Core/wechat/material"
-	"git.jsjit.cn/customerService/customerService_Core/wechat/server"
-	"git.jsjit.cn/customerService/customerService_Core/wechat/user"
+	"github.com/li-keli/go-tool/wechat/cache"
+	"github.com/li-keli/go-tool/wechat/context"
+	"github.com/li-keli/go-tool/wechat/kf"
+	"github.com/li-keli/go-tool/wechat/material"
+	"github.com/li-keli/go-tool/wechat/server"
+	"github.com/li-keli/go-tool/wechat/user"
+
 	"net/http"
 	"sync"
 )
