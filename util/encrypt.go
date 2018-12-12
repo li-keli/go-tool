@@ -5,6 +5,8 @@ import (
 	"crypto/cipher"
 	"crypto/md5"
 	"fmt"
+	"github.com/satori/go.uuid"
+	"strings"
 )
 
 type AesEncrypt struct {
@@ -64,9 +66,16 @@ func (this *AesEncrypt) Decrypt(src []byte) (strBytes []byte, err error) {
 	return decrypted, nil
 }
 
+// MD5加密
 func ToMd5(s string) string {
 	data := []byte(s)
 	has := md5.Sum(data)
 	md5str1 := fmt.Sprintf("%x", has) //将[]byte转成16进制
 	return md5str1
+}
+
+// generate UUID
+func GetNewUUID() string {
+	uuids, _ := uuid.NewV4()
+	return strings.Replace(uuids.String(), "-", "", -1)
 }
