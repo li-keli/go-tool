@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/li-keli/go-tool/util"
+	"github.com/li-keli/go-tool/util/http_util"
 	"github.com/li-keli/go-tool/wechat/wechatutil"
 )
 
@@ -59,7 +60,7 @@ func (ctx *Context) GetAccessToken() (accessToken string, err error) {
 func (ctx *Context) GetAccessTokenFromServer() (resAccessToken ResAccessToken, err error) {
 	url := fmt.Sprintf("%s?grant_type=client_credential&appid=%s&secret=%s", AccessTokenURL, ctx.AppID, ctx.AppSecret)
 	var body []byte
-	body, err = wechatutil.HTTPGet(url)
+	body, err = http_util.HTTPGet(url)
 	if err != nil {
 		return
 	}
@@ -86,7 +87,7 @@ func (ctx *Context) GetQyAccessTokenFromJsj() (resAccessToken ResAccessToken, er
 	url := fmt.Sprintf(jsjAccessTokenURL, strconv.FormatInt(unixTime, 10), util.ToMd5(sign))
 
 	var body []byte
-	body, err = wechatutil.HTTPGet(url)
+	body, err = http_util.HTTPGet(url)
 	if err != nil {
 		return
 	}

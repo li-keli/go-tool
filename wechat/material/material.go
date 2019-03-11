@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/li-keli/go-tool/util/http_util"
 	"github.com/li-keli/go-tool/wechat/wechatutil"
 
 	"github.com/li-keli/go-tool/wechat/context"
@@ -61,7 +62,7 @@ func (material *Material) AddNews(articles []*Article) (mediaID string, err erro
 	}
 
 	uri := fmt.Sprintf("%s?access_token=%s", addNewsURL, accessToken)
-	responseBytes, err := wechatutil.PostJSON(uri, req)
+	responseBytes, err := http_util.PostJSON(uri, req)
 	var res resArticles
 	err = json.Unmarshal(responseBytes, res)
 	if err != nil {
@@ -92,7 +93,7 @@ func (material *Material) AddMaterial(mediaType MediaType, filename string) (med
 
 	uri := fmt.Sprintf("%s?access_token=%s&type=%s", addMaterialURL, accessToken, mediaType)
 	var response []byte
-	response, err = wechatutil.PostFile("media", filename, uri)
+	response, err = http_util.PostFile("media", filename, uri)
 	if err != nil {
 		return
 	}
@@ -135,7 +136,7 @@ func (material *Material) AddVideo(filename, title, introduction string) (mediaI
 		return
 	}
 
-	fields := []wechatutil.MultipartFormField{
+	fields := []http_util.MultipartFormField{
 		{
 			IsFile:    true,
 			Fieldname: "video",
@@ -149,7 +150,7 @@ func (material *Material) AddVideo(filename, title, introduction string) (mediaI
 	}
 
 	var response []byte
-	response, err = wechatutil.PostMultipartForm(fields, uri)
+	response, err = http_util.PostMultipartForm(fields, uri)
 	if err != nil {
 		return
 	}
@@ -180,7 +181,7 @@ func (material *Material) DeleteMaterial(mediaID string) error {
 	}
 
 	uri := fmt.Sprintf("%s?access_token=%s", delMaterialURL, accessToken)
-	response, err := wechatutil.PostJSON(uri, reqDeleteMaterial{mediaID})
+	response, err := http_util.PostJSON(uri, reqDeleteMaterial{mediaID})
 	if err != nil {
 		return err
 	}

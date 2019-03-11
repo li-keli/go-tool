@@ -3,6 +3,7 @@ package material
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/li-keli/go-tool/util/http_util"
 	"github.com/li-keli/go-tool/wechat/wechatutil"
 )
 
@@ -46,7 +47,7 @@ func (material *Material) MediaUpload(mediaType MediaType, filename string) (med
 
 	uri := fmt.Sprintf("%s?access_token=%s&type=%s", mediaUploadURL, accessToken, mediaType)
 	var response []byte
-	response, err = wechatutil.PostFile("media", filename, uri)
+	response, err = http_util.PostFile("media", filename, uri)
 	if err != nil {
 		return
 	}
@@ -90,7 +91,7 @@ func (material *Material) ImageUpload(filename string) (url string, err error) {
 
 	uri := fmt.Sprintf("%s?access_token=%s", mediaUploadImageURL, accessToken)
 	var response []byte
-	response, err = wechatutil.PostFile("media", filename, uri)
+	response, err = http_util.PostFile("media", filename, uri)
 	if err != nil {
 		return
 	}

@@ -3,6 +3,7 @@ package user
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/li-keli/go-tool/util/http_util"
 
 	"github.com/li-keli/go-tool/wechat/context"
 	"github.com/li-keli/go-tool/wechat/wechatutil"
@@ -54,7 +55,7 @@ func (user *User) GetUserInfo(openID string) (userInfo *Info, err error) {
 
 	uri := fmt.Sprintf("%s?access_token=%s&openid=%s&lang=zh_CN", userInfoURL, accessToken, openID)
 	var response []byte
-	response, err = wechatutil.HTTPGet(uri)
+	response, err = http_util.HTTPGet(uri)
 	if err != nil {
 		return
 	}

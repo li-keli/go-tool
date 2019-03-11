@@ -1,4 +1,4 @@
-package wechatutil
+package http_util
 
 import (
 	"bytes"

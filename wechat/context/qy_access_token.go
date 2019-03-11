@@ -3,11 +3,11 @@ package context
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/li-keli/go-tool/util/http_util"
+	"github.com/li-keli/go-tool/wechat/wechatutil"
 	"log"
 	"sync"
 	"time"
-
-	"github.com/li-keli/go-tool/wechat/wechatutil"
 )
 
 const (
@@ -56,7 +56,7 @@ func (ctx *Context) GetQyAccessTokenFromServer() (resQyAccessToken ResQyAccessTo
 	log.Printf("GetQyAccessTokenFromServer")
 	url := fmt.Sprintf(qyAccessTokenURL, ctx.AppID, ctx.AppSecret)
 	var body []byte
-	body, err = wechatutil.HTTPGet(url)
+	body, err = http_util.HTTPGet(url)
 	if err != nil {
 		return
 	}
