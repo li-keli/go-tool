@@ -1,7 +1,7 @@
 package db_util
 
 import (
-	"github.com/globalsign/mgo"
+	"github.com/li-keli/mgo"
 	"github.com/sirupsen/logrus"
 )
 
