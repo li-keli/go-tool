@@ -5,8 +5,9 @@ import (
 	"crypto/cipher"
 	"crypto/md5"
 	"fmt"
-	"github.com/satori/go.uuid"
 	"strings"
+
+	"github.com/satori/go.uuid"
 )
 
 type AesEncrypt struct {
@@ -76,6 +77,5 @@ func ToMd5(s string) string {
 
 // generate UUID
 func GetNewUUID() string {
-	uuids, _ := uuid.NewV4()
-	return strings.Replace(uuids.String(), "-", "", -1)
+	return strings.Replace(uuid.NewV4().String(), "-", "", -1)
 }
