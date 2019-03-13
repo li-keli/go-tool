@@ -5,7 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var MongoDbSession *mgo.Session
+var mongoDbSession *mgo.Session
 
 // mongodb conn init
 func NewMongo(url string) {
@@ -14,5 +14,14 @@ func NewMongo(url string) {
 		logrus.Fatal("mongodb connection error: ", err, url)
 	}
 	session.SetMode(mgo.Monotonic, true)
-	MongoDbSession = session
+	mongoDbSession = session
+}
+
+// 获取mongodb会话
+// 请注意获取到的session，一定要defer session.close()
+func GetMongoSession() *mgo.Session {
+	if mongoDbSession == nil {
+		panic("mongodb链接未初始化")
+	}
+	return mongoDbSession.Copy()
 }
