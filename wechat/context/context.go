@@ -9,10 +9,11 @@ import (
 
 // Context struct
 type Context struct {
-	AppID          string
-	AppSecret      string
-	Token          string
-	EncodingAESKey string
+	AppID               string
+	AppSecret           string
+	Token               string
+	EncodingAESKey      string
+	SelfFuncAccessToken func() (resAccessToken ResAccessToken, err error) // 自定义授权token获取方法
 
 	Cache cache.Cache
 

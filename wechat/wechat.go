@@ -19,11 +19,13 @@ type Wechat struct {
 
 // 配置
 type Config struct {
-	AppID          string
-	AppSecret      string
-	Token          string
-	EncodingAESKey string
-	Cache          cache.Cache
+	AppID               string
+	AppSecret           string
+	Token               string
+	EncodingAESKey      string
+	SelfFuncAccessToken func() (resAccessToken context.ResAccessToken, err error) // 自定义授权token获取方法
+
+	Cache cache.Cache
 }
 
 // 模型初始化
@@ -38,6 +40,7 @@ func copyConfigToContext(cfg *Config, context *context.Context) {
 	context.AppSecret = cfg.AppSecret
 	context.Token = cfg.Token
 	context.EncodingAESKey = cfg.EncodingAESKey
+	context.SelfFuncAccessToken = cfg.SelfFuncAccessToken
 	context.Cache = cfg.Cache
 	context.SetAccessTokenLock(new(sync.RWMutex))
 	context.SetJsAPITicketLock(new(sync.RWMutex))

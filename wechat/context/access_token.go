@@ -3,11 +3,9 @@ package context
 import (
 	"encoding/json"
 	"fmt"
-	"strconv"
 	"sync"
 	"time"
 
-	"github.com/li-keli/go-tool/util"
 	"github.com/li-keli/go-tool/util/http_util"
 	"github.com/li-keli/go-tool/wechat/wechatutil"
 )
@@ -15,8 +13,6 @@ import (
 const (
 	//AccessTokenURL 获取access_token的接口
 	AccessTokenURL = "https://api.weixin.qq.com/cgi-bin/token"
-	//jsjAccessTokenURL = "http://172.16.5.63:9999/api/accesstoken?timestamp=%s&sign=%s"
-	jsjAccessTokenURL = "http://wechat-mall.jsj.com.cn/api/accesstoken?timestamp=%s&sign=%s"
 )
 
 //ResAccessToken struct
@@ -34,22 +30,15 @@ func (ctx *Context) SetAccessTokenLock(l *sync.RWMutex) {
 
 //GetAccessToken 获取access_token
 func (ctx *Context) GetAccessToken() (accessToken string, err error) {
-	//ctx.accessTokenLock.Lock()
-	//defer ctx.accessTokenLock.Unlock()
-	//
-	//accessTokenCacheKey := fmt.Sprintf("access_token_%s", ctx.AppID)
-	//val := ctx.Cache.Get(accessTokenCacheKey)
-	//if val != nil {
-	//	accessToken = val.(string)
-	//	return
-	//}
-
 	//从微信服务器获取
 	var resAccessToken ResAccessToken
-	//resAccessToken, err = ctx.GetAccessTokenFromServer()
-	resAccessToken, err = ctx.GetQyAccessTokenFromJsj()
-	if err != nil {
-		return
+	if ctx.SelfFuncAccessToken != nil {
+		resAccessToken, err = ctx.GetAccessTokenSelf()
+		if err != nil {
+			return
+		}
+	} else {
+		resAccessToken, err = ctx.GetAccessTokenFromServer()
 	}
 
 	accessToken = resAccessToken.AccessToken
@@ -79,29 +68,8 @@ func (ctx *Context) GetAccessTokenFromServer() (resAccessToken ResAccessToken, e
 	return
 }
 
-//GetQyAccessTokenFromJsj 强制从金色世纪获取token
-func (ctx *Context) GetQyAccessTokenFromJsj() (resAccessToken ResAccessToken, err error) {
-	unixTime := time.Now().Unix()
-	sign := fmt.Sprint(unixTime, "jsjwechat*$(@^^^^)")
-
-	url := fmt.Sprintf(jsjAccessTokenURL, strconv.FormatInt(unixTime, 10), util.ToMd5(sign))
-
-	var body []byte
-	body, err = http_util.HTTPGet(url)
-	if err != nil {
-		return
-	}
-	err = json.Unmarshal(body, &resAccessToken)
-	if err != nil {
-		return
-	}
-	if resAccessToken.ErrCode != 0 {
-		err = fmt.Errorf("get qy_access_token error : errcode=%v , errormsg=%v", resAccessToken.ErrCode, resAccessToken.ErrMsg)
-		return
-	}
-
-	//qyAccessTokenCacheKey := fmt.Sprintf("qy_access_token_%s", ctx.AppID)
-	//expires := resAccessToken.ExpiresIn - 1500
-	//err = ctx.Cache.Set(qyAccessTokenCacheKey, resAccessToken.AccessToken, time.Duration(expires)*time.Second)
+//自定义微信授权token获取
+func (ctx *Context) GetAccessTokenSelf() (resAccessToken ResAccessToken, err error) {
+	resAccessToken, err = ctx.SelfFuncAccessToken()
 	return
 }
