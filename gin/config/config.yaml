@@ -1,0 +1,3 @@
+service:
+  name: test-demo
+  port: 80

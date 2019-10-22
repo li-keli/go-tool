@@ -1,4 +1,4 @@
-package db_util
+package mongo_db
 
 import (
 	"github.com/li-keli/mgo"

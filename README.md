@@ -4,6 +4,7 @@
 
 ## 内容：
 
+* mongo_db mongodb连接包
 * util 通用工具包
 * wechat 微信公众平台开发包
 * notification 推送包
