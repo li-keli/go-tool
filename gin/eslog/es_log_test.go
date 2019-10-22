@@ -1,4 +1,4 @@
-package es_log
+package eslog
 
 import (
 	"testing"
